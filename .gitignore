@@ -1,0 +1,19 @@
+.venv/
+.env
+.data/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Keep bundled demo documents, but never publish user-uploaded knowledge files.
+data/knowledge/*
+!data/knowledge/产品保修手册.md
+!data/knowledge/售后补偿政策.md
+!data/knowledge/客服操作规范.md
+!data/knowledge/退换货规则.md

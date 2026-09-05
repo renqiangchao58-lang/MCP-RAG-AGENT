@@ -1,0 +1,78 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.19.0
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant-data:/qdrant/storage
+
+  mcp:
+    build: .
+    command: python -m support_pilot.mcp_server --transport streamable-http
+    environment:
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8001
+      SUPPORT_DB_PATH: /app/.data/support.db
+    ports:
+      - "8001:8001"
+    volumes:
+      - app-data:/app/.data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8001), 2).close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    command: python -m support_pilot.api
+    depends_on:
+      qdrant:
+        condition: service_started
+      mcp:
+        condition: service_healthy
+    environment:
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      QDRANT_URL: http://qdrant:6333
+      MCP_URL: http://mcp:8001/mcp
+      KNOWLEDGE_DIR: /app/data/knowledge
+      MODEL_PROVIDER: ${MODEL_PROVIDER:-offline}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      CHAT_MODEL: ${CHAT_MODEL:-gpt-4.1-mini}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-hash}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-small}
+      TOP_K: ${TOP_K:-5}
+      MAX_CITATIONS: ${MAX_CITATIONS:-2}
+      RELEVANCE_RATIO: ${RELEVANCE_RATIO:-0.6}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data/knowledge:/app/data/knowledge
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  web:
+    build: .
+    command: streamlit run src/support_pilot/ui.py --server.address=0.0.0.0 --server.port=8501
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      API_URL: http://api:8000
+    ports:
+      - "8501:8501"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/_stcore/health', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  app-data:
+  qdrant-data:

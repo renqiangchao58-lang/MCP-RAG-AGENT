@@ -1,0 +1,23 @@
+[
+  {"id": "r01", "kind": "retrieval", "query": "订单配送延迟五天，金卡客户补偿多少钱？", "expected_source": "售后补偿政策.md"},
+  {"id": "r02", "kind": "retrieval", "query": "延迟七天以上可以退运费吗？", "expected_source": "售后补偿政策.md"},
+  {"id": "r03", "kind": "retrieval", "query": "退款审核后多久到账？", "expected_source": "售后补偿政策.md"},
+  {"id": "r04", "kind": "retrieval", "query": "商品签收后多久可以无理由退货？", "expected_source": "退换货规则.md"},
+  {"id": "r05", "kind": "retrieval", "query": "定制商品能七天无理由退货吗？", "expected_source": "退换货规则.md"},
+  {"id": "r06", "kind": "retrieval", "query": "质量问题换货需要什么资料？", "expected_source": "退换货规则.md"},
+  {"id": "r07", "kind": "retrieval", "query": "智能设备主机保修多长时间？", "expected_source": "产品保修手册.md"},
+  {"id": "r08", "kind": "retrieval", "query": "VIP 注册产品后保修期多久？", "expected_source": "产品保修手册.md"},
+  {"id": "r09", "kind": "retrieval", "query": "设备进水属于免费保修吗？", "expected_source": "产品保修手册.md"},
+  {"id": "r10", "kind": "retrieval", "query": "创建工单之前是否必须确认？", "expected_source": "客服操作规范.md"},
+  {"id": "r11", "kind": "retrieval", "query": "知识库没有依据时客服应该怎么处理？", "expected_source": "客服操作规范.md"},
+  {"id": "r12", "kind": "retrieval", "query": "客服可以向无关人员提供客户邮箱吗？", "expected_source": "客服操作规范.md"},
+  {"id": "a01", "kind": "route", "query": "七天无理由退货的条件是什么？", "expected_route": "knowledge"},
+  {"id": "a02", "kind": "route", "query": "查询订单 A1024 的状态", "expected_route": "business"},
+  {"id": "a03", "kind": "route", "query": "订单 A1024 延迟五天，按政策是否补偿？", "expected_route": "combined"},
+  {"id": "a04", "kind": "route", "query": "帮订单 A1024 创建工单", "expected_route": "create_ticket"},
+  {"id": "a05", "kind": "route", "query": "帮我创建工单", "expected_route": "clarify"},
+  {"id": "a06", "kind": "route", "query": "帮我创建工单", "last_order_id": "A1024", "expected_route": "create_ticket"},
+  {"id": "a07", "kind": "route", "query": "查询客户 C003", "expected_route": "business"},
+  {"id": "a08", "kind": "route", "query": "查看订单 A1001 的历史工单", "expected_route": "business"}
+]
+
