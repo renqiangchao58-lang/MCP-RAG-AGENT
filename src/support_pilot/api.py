@@ -57,7 +57,7 @@ def create_app(
             knowledge.close()
 
     app = FastAPI(
-        title="SupportPilot API",
+        title="SupportPilot AI API",
         version=__version__,
         description="Cited RAG and MCP-powered support agent",
         lifespan=lifespan,

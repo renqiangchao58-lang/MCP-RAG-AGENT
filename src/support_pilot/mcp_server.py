@@ -12,7 +12,7 @@ from support_pilot.repository import SupportRepository
 settings = get_settings()
 repository = SupportRepository(settings.support_db_path)
 mcp = FastMCP(
-    "SupportPilot Business System",
+    "SupportPilot AI Business System",
     instructions="Query demo customers/orders/tickets and create support tickets.",
     host=settings.mcp_host,
     port=settings.mcp_port,
@@ -63,4 +63,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

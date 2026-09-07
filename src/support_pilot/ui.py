@@ -12,8 +12,8 @@ from support_pilot.config import get_settings
 settings = get_settings()
 API_URL = settings.api_url.rstrip("/")
 
-st.set_page_config(page_title="SupportPilot", page_icon="🛟", layout="wide")
-st.title("🛟 SupportPilot")
+st.set_page_config(page_title="SupportPilot AI", page_icon="🛟", layout="wide")
+st.title("🛟 SupportPilot AI")
 st.caption("带来源引用的企业知识库与 MCP 工单执行 Agent")
 
 if "thread_id" not in st.session_state:

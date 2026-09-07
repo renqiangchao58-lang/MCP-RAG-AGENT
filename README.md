@@ -1,6 +1,8 @@
-# SupportPilot
+# SupportPilot AI
 
-面向企业售后的 AI Agent：使用 LangGraph 编排工作流，结合 LangChain RAG 与 MCP 业务工具，完成“查政策 → 查订单 → 判断资格 → 人工确认 → 创建工单”的闭环。
+SupportPilot AI 是面向企业售后的智能客服 Agent：使用 LangGraph 编排工作流，结合 LangChain RAG 与 MCP 业务工具，完成“查政策 → 查订单 → 判断资格 → 人工确认 → 创建工单”的闭环。
+
+> An AI customer support agent powered by LangGraph, LangChain RAG, Qdrant, and MCP, featuring cited answers, business tool integration, and human-approved ticket operations.
 
 项目支持 DeepSeek 等 OpenAI-compatible 模型，也可以完全离线运行。当前版本：`v1.0.0`。
 
@@ -41,6 +43,8 @@ flowchart LR
 ```
 
 详细设计见 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)。
+
+如果希望从概念到源码系统学习本项目，请阅读 [docs/LEARNING_GUIDE.md](docs/LEARNING_GUIDE.md)。
 
 ## 已完成功能
 

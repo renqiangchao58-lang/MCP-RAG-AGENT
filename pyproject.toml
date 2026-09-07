@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "support-pilot"
+name = "supportpilot-ai-agent"
 version = "1.0.0"
-description = "A LangGraph support agent combining cited RAG with MCP business tools."
+description = "An AI customer support agent powered by LangGraph, LangChain RAG, Qdrant, and MCP."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
