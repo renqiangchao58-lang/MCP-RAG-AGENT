@@ -71,6 +71,14 @@ Copy-Item .env.example .env
 
 ### 配置 DeepSeek
 
+已有 DeepSeek 官方 API 余额、希望对话使用 DeepSeek 而 Embedding 使用百炼时，
+参见 [DeepSeek 对话 + 百炼 Embedding 搭建指南](docs/DEEPSEEK_SETUP.md)
+和 `.env.deepseek.example`。两家服务的地址与密钥可以独立配置。
+
+使用阿里云百炼同时提供对话和 Embedding、数据库保留本机的配置，见
+[百炼本地开发搭建指南](docs/BAILIAN_SETUP.md) 和 `.env.bailian.example`。
+
+
 编辑项目根目录的 `.env`：
 
 ```dotenv

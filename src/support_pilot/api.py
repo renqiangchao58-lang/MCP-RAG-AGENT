@@ -33,6 +33,7 @@ def create_app(
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
+        runtime_settings.validate_api_credentials()
         knowledge = KnowledgeService(runtime_settings)
         try:
             attempts = 20 if runtime_settings.qdrant_url else 1
@@ -116,6 +117,10 @@ def create_app(
             "version": __version__,
             "knowledge_indexed": knowledge.has_index(),
             "model_mode": "llm" if runtime_settings.llm_enabled else "offline",
+            "chat_model": runtime_settings.chat_model,
+            "embedding_provider": runtime_settings.embedding_provider,
+            "embedding_model": runtime_settings.embedding_model,
+            "qdrant_collection": runtime_settings.qdrant_collection,
         }
 
     @app.get("/api/knowledge/documents")

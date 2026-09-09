@@ -11,6 +11,8 @@ from pathlib import Path
 
 import httpx
 
+from support_pilot.config import Settings
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = PROJECT_ROOT / ".data"
@@ -89,6 +91,22 @@ def main() -> None:
     services: dict[str, tuple[subprocess.Popen, object, object]] = {}
     status: dict[str, str] = {}
     try:
+        settings = Settings()
+        settings.validate_api_credentials()
+        if port_open(8000):
+            current = wait_for_http("http://127.0.0.1:8000/health", timeout=5)
+            expected = {
+                "model_mode": "llm" if settings.llm_enabled else "offline",
+                "chat_model": settings.chat_model,
+                "embedding_provider": settings.embedding_provider,
+                "embedding_model": settings.embedding_model,
+                "qdrant_collection": settings.qdrant_collection,
+            }
+            if any(current.get(key) != value for key, value in expected.items()):
+                raise RuntimeError(
+                    "端口 8000 上的 API 配置与当前 .env 不一致。"
+                    "请停止旧 API 进程后重新启动；旧离线服务不能作为云端接入成功的证明。"
+                )
         if port_open(8001):
             status["mcp"] = "already_running"
         else:

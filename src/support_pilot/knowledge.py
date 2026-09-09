@@ -7,8 +7,6 @@ from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
 from langchain_core.documents import Document
-from langchain_core.embeddings import Embeddings
-from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pypdf import PdfReader
@@ -16,7 +14,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
 
 from support_pilot.config import Settings, get_settings
-from support_pilot.embeddings import HashEmbeddings
+from support_pilot.embeddings import HashEmbeddings, build_embeddings
 from support_pilot.schemas import Citation
 
 
@@ -29,21 +27,10 @@ class KnowledgeService:
     def __init__(self, settings: Settings | None = None):
         self.settings = settings or get_settings()
         self.settings.ensure_directories()
-        self.embeddings = self._build_embeddings()
+        self.embeddings = build_embeddings(self.settings)
         self.client = self._build_client()
         self._store: QdrantVectorStore | None = None
         self._lock = threading.RLock()
-
-    def _build_embeddings(self) -> Embeddings:
-        if self.settings.embedding_provider.lower() == "openai":
-            if not self.settings.openai_api_key:
-                raise ValueError("EMBEDDING_PROVIDER=openai 时必须配置 OPENAI_API_KEY")
-            return OpenAIEmbeddings(
-                model=self.settings.embedding_model,
-                api_key=self.settings.openai_api_key,
-                base_url=self.settings.openai_base_url or None,
-            )
-        return HashEmbeddings(self.settings.hash_embedding_dimensions)
 
     def _build_client(self) -> QdrantClient:
         if self.settings.qdrant_url:
