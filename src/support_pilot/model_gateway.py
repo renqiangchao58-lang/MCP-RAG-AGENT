@@ -21,6 +21,7 @@ class ModelGateway:
 
     def __init__(self, settings: Settings | None = None):
         self.settings = settings or get_settings()
+        self.settings.validate_api_credentials(embedding=False)
         self.model: ChatOpenAI | None = None
         if self.settings.llm_enabled:
             self.model = ChatOpenAI(
@@ -28,6 +29,8 @@ class ModelGateway:
                 api_key=self.settings.openai_api_key,
                 base_url=self.settings.openai_base_url or None,
                 temperature=0,
+                timeout=30,
+                max_retries=1,
             )
 
     @staticmethod

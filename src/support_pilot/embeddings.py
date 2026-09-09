@@ -6,6 +6,26 @@ import re
 from collections import Counter
 
 from langchain_core.embeddings import Embeddings
+from langchain_openai import OpenAIEmbeddings
+
+from support_pilot.config import Settings
+
+
+def build_embeddings(settings: Settings) -> Embeddings:
+    if settings.embedding_provider.lower() == "openai":
+        settings.validate_api_credentials(chat=False)
+        return OpenAIEmbeddings(
+            model=settings.embedding_model,
+            api_key=settings.effective_embedding_api_key,
+            base_url=settings.effective_embedding_base_url or None,
+            # Compatible providers expect strings, not OpenAI token IDs.
+            check_embedding_ctx_length=False,
+            chunk_size=settings.embedding_batch_size,
+            model_kwargs={"encoding_format": "float"},
+            request_timeout=30,
+            max_retries=1,
+        )
+    return HashEmbeddings(settings.hash_embedding_dimensions)
 
 
 class HashEmbeddings(Embeddings):

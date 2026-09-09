@@ -23,7 +23,10 @@ class Settings(BaseSettings):
     model_routing_enabled: bool = False
 
     embedding_provider: str = "hash"
+    embedding_api_key: str = ""
+    embedding_base_url: str = ""
     embedding_model: str = "text-embedding-3-small"
+    embedding_batch_size: int = Field(default=10, ge=1)
     hash_embedding_dimensions: int = 384
 
     knowledge_dir: Path = Path("data/knowledge")
@@ -48,6 +51,32 @@ class Settings(BaseSettings):
     @property
     def llm_enabled(self) -> bool:
         return self.model_provider.lower() == "openai" and bool(self.openai_api_key)
+
+    @property
+    def separate_embedding_endpoint(self) -> bool:
+        return bool(self.embedding_base_url.strip() or self.embedding_api_key.strip())
+
+    @property
+    def effective_embedding_api_key(self) -> str:
+        return self.embedding_api_key if self.separate_embedding_endpoint else self.openai_api_key
+
+    @property
+    def effective_embedding_base_url(self) -> str:
+        return self.embedding_base_url if self.separate_embedding_endpoint else self.openai_base_url
+
+    def validate_api_credentials(self, *, chat: bool = True, embedding: bool = True) -> None:
+        missing = []
+        if chat and self.model_provider.lower() == "openai" and not self.openai_api_key.strip():
+            missing.append("OPENAI_API_KEY（对话服务商的密钥）")
+        if embedding and self.embedding_provider.lower() == "openai":
+            if self.separate_embedding_endpoint:
+                # Never send the chat provider's key to a separate embedding provider.
+                if not self.embedding_api_key.strip() or not self.embedding_base_url.strip():
+                    missing.append("EMBEDDING_API_KEY 与 EMBEDDING_BASE_URL 必须成对填写")
+            elif not self.openai_api_key.strip():
+                missing.append("OPENAI_API_KEY（共用接口）或独立 Embedding 地址与密钥")
+        if missing:
+            raise ValueError("请在项目 .env 中配置：" + "；".join(missing))
 
     def ensure_directories(self) -> None:
         self.knowledge_dir.mkdir(parents=True, exist_ok=True)
