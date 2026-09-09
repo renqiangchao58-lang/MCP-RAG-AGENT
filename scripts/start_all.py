@@ -11,10 +11,14 @@ from pathlib import Path
 
 import httpx
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = PROJECT_ROOT / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
 from support_pilot.config import Settings
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = PROJECT_ROOT / ".data"
 LOG_DIR = DATA_DIR / "logs"
 
